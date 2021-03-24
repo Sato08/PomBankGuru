@@ -5,22 +5,24 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-
 import org.testng.annotations.Test;
-import pom_bankguru.action.pageObjects.HomePageObject;
-import pom_bankguru.action.pageObjects.LoginPageObject;
-import pom_bankguru.action.pageObjects.RegisterPageObject;
+
+import pom_bankguru.action.pageFactory.HomePageFactory;
+import pom_bankguru.action.pageFactory.LoginPageFactory;
+import pom_bankguru.action.pageFactory.RegisterPageFactory;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Account_03_RegisterAndLogin_PageObjectPattern {
+public class Account_04_RegisterAndLogin_Selenium_PageFactory {
+    /*Link tham khảo: https://www.guru99.com/page-object-model-pom-page-factory-in-selenium-ultimate-guide.html */
 
     WebDriver driver;
     String email, username, password, loginPageUrl;
-    LoginPageObject loginPage;
-    RegisterPageObject registerPage;
-    HomePageObject homePage;
+
+    LoginPageFactory loginPageFactory;
+    RegisterPageFactory registerPageFactory;
+    HomePageFactory homePageFactory;
 
     @BeforeClass
     public void beforeClass(){
@@ -29,16 +31,16 @@ public class Account_03_RegisterAndLogin_PageObjectPattern {
         driver = new ChromeDriver();
         email = "automation10" + randomDataTest() + "@gmail.com";
 
-        loginPage = new LoginPageObject(driver);
-        registerPage = new RegisterPageObject(driver);
-        homePage = new HomePageObject(driver);
+        loginPageFactory = new LoginPageFactory(driver);
+        registerPageFactory = new RegisterPageFactory(driver);
+        homePageFactory = new HomePageFactory(driver);
 
         //Selenium API: Xử lí triệt để theo PO trong bài sau
         System.out.println("PRE-CONFITION - STEP: 1. Open BankGuru Application");
         driver.get("http://demo.guru99.com/v4/");
 
         System.out.println("PRE-CONFITION - STEP: 2. Get Login Page Url");
-        loginPageUrl = loginPage.getLoginPageUrl();
+        loginPageUrl = loginPageFactory.getLoginPageUrl();
 
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
@@ -49,37 +51,37 @@ public class Account_03_RegisterAndLogin_PageObjectPattern {
     @Test
     public void TC_01_RegisterToSystem(){
         System.out.println("REGISTER-STEP: 1.Click to Here link");
-        loginPage.clickToHereLink();
+        loginPageFactory.clickToHereLink();
 
         System.out.println("REGISTER-STEP: 2.Input to Email ID Textbox");
-        registerPage.inputToEmailTextBox(email);
+        registerPageFactory.inputToEmailTextBox(email);
 
         System.out.println("REGISTER-STEP: 3.Click to SUBMIT button");
-        registerPage.clickToSubmitButton();
+        registerPageFactory.clickToSubmitButton();
 
         System.out.println("REGISTER-STEP: 4.Get Username/Password infor");
-        username = registerPage.getUsernameInformation();
-        password = registerPage.getPasswordInformation();
+        username = registerPageFactory.getUsernameInformation();
+        password = registerPageFactory.getPasswordInformation();
 
     }
 
     public void TC_02_LoginToSystem(){
         System.out.println("LOGIN -STEP:1.Open Login Page");
-        registerPage.openLoginPageUrl(loginPageUrl);
+        registerPageFactory.openLoginPageUrl(loginPageUrl);
 
         System.out.println("LOGIN -STEP:2.Input to UserID/Password textbox");
-        loginPage.inputToUserIDTextbox(username);
-        loginPage.inputToPasswordTextbox(password);
+        loginPageFactory.inputToUserIDTextbox(username);
+        loginPageFactory.inputToPasswordTextbox(password);
 
         System.out.println("LOGIN -STEP:3.Click to LOGIN button");
-        loginPage.clickToLoginButton();
+        loginPageFactory.clickToLoginButton();
 
 
         System.out.println("LOGIN -STEP:4.Verify Welcome Message displayes");
-        Assert.assertTrue(homePage.isWelcomeMessageDisplayed("Wellcome To Manager's Page"));
+        Assert.assertTrue(homePageFactory.isWelcomeMessageDisplayed("Wellcome To Manager's Page"));
 
         System.out.println("LOGIN -STEP:5.Verify UserID dispalyed");
-        Assert.assertTrue(homePage.isUserIDDíplayed(username));
+        Assert.assertTrue(homePageFactory.isUserIDDíplayed(username));
 
 
     }
