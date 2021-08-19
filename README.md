@@ -1,1 +1,2 @@
 # PomBankGuru
+Project learning Selenium
